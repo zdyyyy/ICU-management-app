@@ -1,0 +1,19 @@
+{
+  "name": "icu-resource-manager",
+  "version": "0.1.0",
+  "description": "Hospital/ICU resource and patient flow management - Ottawa context",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": ["hospital", "icu", "triage", "bed-management", "ottawa"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5"
+  }
+}
