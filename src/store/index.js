@@ -1,6 +1,3 @@
-/**
- * In-memory store - replace with DB (e.g. PostgreSQL, MongoDB) for production
- */
 function id() {
   try {
     return require('crypto').randomUUID();
