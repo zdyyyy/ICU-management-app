@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const config = require('./config');
 
+const bedsRouter = require('./routes/beds');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -25,5 +27,7 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'icu-resource-manager' });
 });
+
+app.use('/api/beds', bedsRouter);
 
 module.exports = app;
