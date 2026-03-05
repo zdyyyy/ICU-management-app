@@ -8,6 +8,7 @@ function id() {
 
 const store = {
   beds: [],
+  patients: [],
 };
 
 module.exports = {
