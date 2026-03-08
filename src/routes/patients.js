@@ -1,0 +1,27 @@
+const express = require('express');
+const router = express.Router();
+const patientService = require('../services/patientService');
+
+router.get('/', (req, res) => {
+  res.json(patientService.getPatients());
+});
+
+router.get('/:id', (req, res) => {
+  const patient = patientService.getPatientById(req.params.id);
+  if (!patient) return res.status(404).json({ error: 'Patient not found' });
+  return res.json(patient);
+});
+
+router.post('/', (req, res) => {
+  const patient = patientService.createPatient(req.body);
+  if (!patient) return res.status(501).json({ error: 'failed to create patient' });
+  return res.status(201).json(patient);
+});
+
+router.patch('/:id', (req, res) => {
+  const patient = patientService.updatePatient(req.params.id, req.body);
+  if (!patient) return res.status(404).json({ error: 'Patient not found' });
+  res.json(patient);
+});
+
+module.exports = router;

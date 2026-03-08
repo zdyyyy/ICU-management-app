@@ -3,6 +3,7 @@ const cors = require('cors');
 const config = require('./config');
 
 const bedsRouter = require('./routes/beds');
+const patientsRouter = require('./routes/patients');
 
 const app = express();
 app.use(cors());
@@ -29,5 +30,6 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/beds', bedsRouter);
+app.use('/api/patients', patientsRouter);
 
 module.exports = app;
