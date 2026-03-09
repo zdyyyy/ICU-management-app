@@ -1,5 +1,6 @@
 const { store } = require('../store');
 const config = require('../config');
+const { publishEvent } = require('./messageQueueService');
 
 function getAvailableBeds(bedType = null) {
   const beds = store.beds.filter(bed => bed.status === 'AVAILABLE');
@@ -19,6 +20,9 @@ function assignPatientToBed(bedId, patientId) {
   bed.status = 'OCCUPIED';
   bed.patientId = patientId;
   bed.occupiedAt = new Date().toISOString();
+  
+  publishEvent('BED_ASSIGNED', { bedId: bed.id, patientId });
+  
   return bed;
 }
 
@@ -28,6 +32,9 @@ function releaseBed(bedId) {
   bed.status = 'AVAILABLE';
   bed.patientId = null;
   bed.occupiedAt = null;
+  
+  publishEvent('BED_RELEASED', { bedId: bed.id });
+  
   return bed;
 }
 
