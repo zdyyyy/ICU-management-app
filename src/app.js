@@ -6,6 +6,7 @@ const bedsRouter = require('./routes/beds');
 const patientsRouter = require('./routes/patients');
 const waitlistRouter = require('./routes/waitlist');
 const triageRouter = require('./routes/triage');
+const patientPortalRouter = require('./routes/patientPortal');
 
 const app = express();
 app.use(cors());
@@ -35,5 +36,6 @@ app.use('/api/beds', bedsRouter);
 app.use('/api/patients', patientsRouter);
 app.use('/api/waitlist', waitlistRouter);
 app.use('/api/triage', triageRouter);
+app.use('/api/patient-portal', patientPortalRouter);
 
 module.exports = app;
