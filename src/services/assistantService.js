@@ -14,12 +14,12 @@ const openai = new OpenAI({
  * Ask the Assistant a question based on current ICU context (Real-time RAG)
  */
 async function askAssistant(question) {
-  // 1. Retrieval: Fetch all the real-time context from our systems
+  // Fetch all the real-time context from our systems
   const availableBeds = bedService.getAvailableBeds();
   const waitlistData = waitlistService.getWaitlist(true); // Waitlist with patient details
   const rankedWaitlist = triageService.sortWaitlist(waitlistData); // Ranked by priority
 
-  // 2. Augmentation: Build a prompt with the retrieved data
+  // Build a prompt with the retrieved data
   const systemPrompt = `
 You are an intelligent Assistant for the ICU Head Nurse. 
 Your goal is to help make decisions based on the REAL-TIME data provided below.
@@ -38,7 +38,7 @@ ${JSON.stringify(rankedWaitlist.slice(0, 5), null, 2)} // Only show top 5 to sav
   `;
 
   try {
-    // 3. Generation: Send to LLM
+    // Generation: Send to LLM
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini', // or 'gpt-3.5-turbo' if 4o-mini is not available
       messages: [
