@@ -1,6 +1,8 @@
 const { store } = require('../store');
 const triageService = require('./triageService');
 
+const statusCache = {};
+const CACHE_TTL_MS = 15000;
 
 function findPatientByMrn(mrn) {
   const normalization = String(mrn || '').trim().toUpperCase();
@@ -10,7 +12,6 @@ function findPatientByMrn(mrn) {
 }
 
 function getQueuePosition(patientId) {
-  // const patient = store.patients.find(p => p.id === patientId);
   const waitlist = store.waitlist.map(w => {
     const patient = store.patients.find(p => p.id === w.patientId);
     return {...w, patient: patient || null};
@@ -38,6 +39,15 @@ function toPriorityDisplay(level) {
 }
 
 function getStatusForPatient(mrn) {
+  // check cache before performing heavy computations
+  const cached = statusCache[mrn];
+  if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+    console.log(`[Cache] HIT for MRN: ${mrn}`);
+    return cached.data;
+  }
+  
+  console.log(`[Cache] MISS for MRN: ${mrn}. Computing...`);
+
   // find patient
   const patient = findPatientByMrn(mrn);
   if(!patient) return null;
@@ -55,7 +65,7 @@ function getStatusForPatient(mrn) {
   const assignedBed = store.beds.find(b => b.patientId === patient.id);
   const status = assignedBed ? 'ASSIGNED' : (onWaitlist ? 'WAITING' : patient.status || "UNKNOWN");
 
-  return {
+  const result = {
     status,
     queuePosition: queuePosition || undefined,
     totalInQueue: totalWaiting,
@@ -65,7 +75,14 @@ function getStatusForPatient(mrn) {
     priorityDisplay: toPriorityDisplay(patient.priorityLevel),
     lastUpdated: new Date().toISOString()
   };
-  
+
+  // store the newly computed result in cache
+  statusCache[mrn] = {
+    data: result,
+    timestamp: Date.now()
+  };
+
+  return result;
 }
 
 module.exports = {
