@@ -25,6 +25,11 @@ function createPatient(body) {
   return patient;
 }
 
+// updatePatient: allow PATCH to update patient fields (including mrn for patient-portal lookup).
+// Changes from original:
+// - Added 'mrn' to allowed so PATCH can set/update MRN (was: ['name', 'priorityLevel', 'requiredBedType', 'status', 'notes']).
+// - Added guard so missing/invalid body does not throw (was: no guard; forEach ran on undefined).
+// Original allowed: const allowed = ['name', 'priorityLevel', 'requiredBedType', 'status', 'notes'];
 function updatePatient(patientId, body) {
   const patient = getPatientById(patientId);
   if (!patient) return null;
