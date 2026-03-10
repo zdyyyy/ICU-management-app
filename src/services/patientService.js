@@ -14,7 +14,7 @@ function createPatient(body) {
   const patient = {
     id: patientId,
     name: (body && body.name) || 'Unknown',
-    mrn: (body && body.mrn) || '',
+    mrn:  (body && body.mrn) || '',
     priorityLevel: (body && body.priorityLevel) || 'MEDIUM',
     requiredBedType: (body && body.requiredBedType) || 'GENERAL',
     notes: (body && body.notes) || '',
@@ -28,9 +28,10 @@ function createPatient(body) {
 function updatePatient(patientId, body) {
   const patient = getPatientById(patientId);
   if (!patient) return null;
+  if (!body || typeof body !== 'object') return patient;
   const allowed = ['name', 'mrn', 'priorityLevel', 'requiredBedType', 'status', 'notes'];
   allowed.forEach(k => {
-    if (body && body[k] !== undefined) patient[k] = body[k];
+    if (body[k] !== undefined) patient[k] = body[k];
   });
   return patient;
 }

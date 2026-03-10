@@ -19,7 +19,14 @@ router.post('/', (req, res) => {
 });
 
 router.patch('/:id', (req, res) => {
-  const patient = patientService.updatePatient(req.params.id, req.body);
+  const body = { ...(req.body || {}) };
+  if (req.query.mrn !== undefined) body.mrn = req.query.mrn;
+  if (Object.keys(body).length === 0) {
+    console.warn('[PATCH /api/patients] empty body - use ?mrn=1 in URL or send JSON body');
+  } else {
+    console.log('[PATCH /api/patients] body:', JSON.stringify(body));
+  }
+  const patient = patientService.updatePatient(req.params.id, body);
   if (!patient) return res.status(404).json({ error: 'Patient not found' });
   res.json(patient);
 });
