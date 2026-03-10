@@ -18,11 +18,6 @@ router.post('/', (req, res) => {
   return res.status(201).json(patient);
 });
 
-// PATCH: allow updating patient (e.g. set mrn for patient-portal). Body can be JSON or use ?mrn= in query.
-// Changes from original:
-// - Merge req.query.mrn into body so PATCH works with ?mrn=1 when JSON body is not sent (e.g. PowerShell/Windows).
-// - Optional logging when body is empty vs present.
-// Original: const patient = patientService.updatePatient(req.params.id, req.body);
 router.patch('/:id', (req, res) => {
   const body = { ...(req.body || {}) };
   if (req.query.mrn !== undefined) body.mrn = req.query.mrn;
