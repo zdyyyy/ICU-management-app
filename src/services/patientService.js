@@ -28,7 +28,7 @@ function createPatient(body) {
 function updatePatient(patientId, body) {
   const patient = getPatientById(patientId);
   if (!patient) return null;
-  const allowed = ['name', 'priorityLevel', 'requiredBedType', 'status', 'notes'];
+  const allowed = ['name', 'mrn', 'priorityLevel', 'requiredBedType', 'status', 'notes'];
   allowed.forEach(k => {
     if (body && body[k] !== undefined) patient[k] = body[k];
   });
