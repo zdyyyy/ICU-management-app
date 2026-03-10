@@ -4,10 +4,6 @@ const config = require('./config');
 
 const bedsRouter = require('./routes/beds');
 const patientsRouter = require('./routes/patients');
-const waitlistRouter = require('./routes/waitlist');
-const triageRouter = require('./routes/triage');
-const patientPortalRouter = require('./routes/patientPortal');
-const assistantRouter = require('./routes/assistant');
 
 const app = express();
 app.use(cors());
@@ -35,9 +31,5 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/beds', bedsRouter);
 app.use('/api/patients', patientsRouter);
-app.use('/api/waitlist', waitlistRouter);
-app.use('/api/triage', triageRouter);
-app.use('/api/patient-portal', patientPortalRouter);
-app.use('/api/assistant', assistantRouter);
 
 module.exports = app;
