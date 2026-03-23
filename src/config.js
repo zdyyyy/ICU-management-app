@@ -4,6 +4,9 @@ module.exports = {
   
   openaiApiKey: process.env.OPENAI_API_KEY || 'openai_api_key',
 
+  ragTopK: Math.min(20, Math.max(1, parseInt(process.env.RAG_TOP_K || '4', 10))),
+  ragEmbeddingModel: process.env.RAG_EMBEDDING_MODEL || 'text-embedding-3-small',
+
   bedTypes: ['ICU', 'STEP_DOWN', 'GENERAL', 'EMERGENCY'],
 
   priorityLevels: {

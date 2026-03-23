@@ -2,56 +2,74 @@ const { OpenAI } = require('openai');
 const bedService = require('./bedService');
 const triageService = require('./triageService');
 const waitlistService = require('./waitlistService');
+const ragService = require('./ragService');
 const config = require('../config');
 
-// Initialize OpenAI client
-// Note: It expects OPENAI_API_KEY in process.env or explicitly passed
 const openai = new OpenAI({
   apiKey: config.openaiApiKey,
 });
 
 /**
- * Ask the Assistant a question based on current ICU context (Real-time RAG)
+ * ICU assistant: live bed/waitlist data + vector RAG over local knowledge/*.md
  */
 async function askAssistant(question) {
-  // Fetch all the real-time context from our systems
   const availableBeds = bedService.getAvailableBeds();
-  const waitlistData = waitlistService.getWaitlist(true); // Waitlist with patient details
-  const rankedWaitlist = triageService.sortWaitlist(waitlistData); // Ranked by priority
+  const waitlistData = waitlistService.getWaitlist(true);
+  const rankedWaitlist = triageService.sortWaitlist(waitlistData);
 
-  // Build a prompt with the retrieved data
+  let ragSection = '(No protocol snippets retrieved.)';
+  try {
+    const ragChunks = await ragService.retrieveRelevantChunks(
+      question,
+      config.ragTopK
+    );
+    if (ragChunks.length) {
+      ragSection = ragChunks
+        .map((c, n) => `--- Snippet ${n + 1} ---\n${c}`)
+        .join('\n\n');
+    }
+  } catch (err) {
+    console.warn('[RAG]', err.message);
+  }
+
   const systemPrompt = `
-You are an intelligent Assistant for the ICU Head Nurse. 
-Your goal is to help make decisions based on the REAL-TIME data provided below.
+You are an intelligent Assistant for the ICU Head Nurse.
+Your goal is to help make operational decisions using (1) LIVE system data and (2) retrieved policy/protocol excerpts when relevant.
 
-=== CURRENT ICU STATUS ===
+=== CURRENT ICU STATUS (authoritative for beds, patients, and waitlist) ===
 Available Beds:
 ${JSON.stringify(availableBeds, null, 2)}
 
-Ranked Waitlist (Top priority patients first):
-${JSON.stringify(rankedWaitlist.slice(0, 5), null, 2)} // Only show top 5 to save tokens
+Ranked Waitlist (top 5 by priority):
+${JSON.stringify(rankedWaitlist.slice(0, 5), null, 2)}
+
+=== RETRIEVED KNOWLEDGE (from local documents — use for policy framing, not for inventing patient/bed facts) ===
+${ragSection}
 
 === INSTRUCTIONS ===
-- Answer the user's question accurately based ONLY on the data above.
-- Be concise, professional, and act as a clinical operational assistant.
-- Do not hallucinate patients or beds that are not in the data.
+- For who gets which bed, counts, and patient order: rely ONLY on CURRENT ICU STATUS.
+- Use RETRIEVED KNOWLEDGE to explain rationale, policy norms, or safety communication — without contradicting live data.
+- Be concise and professional. Do not hallucinate patients or beds not present in CURRENT ICU STATUS.
   `;
 
   try {
-    // Generation: Send to LLM
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // or 'gpt-3.5-turbo' if 4o-mini is not available
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: question }
+        { role: 'user', content: question },
       ],
-      temperature: 0.2, // Low temperature for more factual responses
+      temperature: 0.2,
     });
 
     return response.choices[0].message.content;
   } catch (error) {
-    console.error("[Assistant Error]", error.message);
-    throw new Error("Failed to communicate with the Assistant AI.");
+    console.error('[Assistant Error]', error.message);
+    const msg =
+      config.env === 'development'
+        ? error.message
+        : 'Failed to communicate with the Assistant AI.';
+    throw new Error(msg);
   }
 }
 
