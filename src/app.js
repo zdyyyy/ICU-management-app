@@ -38,6 +38,5 @@ app.use('/api/patients', patientsRouter);
 app.use('/api/waitlist', waitlistRouter);
 app.use('/api/triage', triageRouter);
 app.use('/api/patient-portal', patientPortalRouter);
-app.use('/api/patientPortal', patientPortalRouter);
 app.use('/api/assistant', assistantRouter);
 module.exports = app;

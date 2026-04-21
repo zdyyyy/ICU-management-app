@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const assistantService = require('../services/assistantService');
 
-// POST /api/assistant/ask
-// Body: { "question": "Who should get the next ICU bed and why?" }
 router.post('/ask', async (req, res) => {
   const { question } = req.body;
   
