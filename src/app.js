@@ -8,6 +8,7 @@ const waitlistRouter = require('./routes/waitlist');
 const triageRouter = require('./routes/triage');
 const patientPortalRouter = require('./routes/patientPortal');
 const assistantRouter = require('./routes/assistant');
+const literatureRouter = require('./routes/literature');
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
   <p>API is running.</p>
   <ul>
     <li><a href="/api/health">/api/health</a> – health check</li>
+    <li><code>POST /api/literature/ask</code> – PubMed 医学文献问答</li>
   </ul>
 </body>
 </html>
@@ -40,4 +42,5 @@ app.use('/api/triage', triageRouter);
 app.use('/api/patient-portal', patientPortalRouter);
 app.use('/api/patientPortal', patientPortalRouter);
 app.use('/api/assistant', assistantRouter);
+app.use('/api/literature', literatureRouter);
 module.exports = app;
