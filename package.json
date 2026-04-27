@@ -5,7 +5,14 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "extract:guideline-metadata": "node scripts/extract-guideline-metadata.js",
+    "promote:guideline-metadata": "node scripts/promote-guideline-metadata.js",
+    "build:guideline-index-input": "node scripts/build-guideline-index-input.js",
+    "build:guideline-chunks": "node scripts/build-guideline-chunks.js",
+    "embed:guideline-chunks": "node scripts/embed-guideline-chunks.js",
+    "docker:build": "docker build -t icu-resource-manager:latest .",
+    "k8s:apply": "kubectl apply -k k8s/"
   },
   "keywords": [
     "hospital",
@@ -23,6 +30,7 @@
     "dotenv": "^17.3.1",
     "express": "^4.21.0",
     "express-rate-limit": "^8.3.0",
-    "openai": "^6.27.0"
+    "openai": "^6.27.0",
+    "pdf-parse": "^2.4.5"
   }
 }
