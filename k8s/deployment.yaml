@@ -1,0 +1,63 @@
+# Before apply:
+#   1) docker build -t icu-resource-manager:latest .
+#   2) (minikube/kind) load image into cluster OR push to a registry and set image below.
+#   3) kubectl -n icu-app create secret generic icu-openai \
+#        --from-literal=OPENAI_API_KEY='your-key' \
+#        --dry-run=client -o yaml | kubectl apply -f -
+#
+# Apply: kubectl apply -k k8s/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: icu-resource-manager
+  labels:
+    app.kubernetes.io/name: icu-resource-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: icu-resource-manager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: icu-resource-manager
+    spec:
+      containers:
+        - name: api
+          # Change to your registry tag for real clusters, e.g. ghcr.io/you/icu-resource-manager:0.1.0
+          image: icu-resource-manager:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3000"
+            - name: GUIDELINE_EMBEDDING_MODEL
+              value: text-embedding-3-small
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: icu-openai
+                  key: OPENAI_API_KEY
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi

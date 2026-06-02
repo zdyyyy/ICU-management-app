@@ -1,0 +1,43 @@
+.banner {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: var(--radius);
+  color: #e65100;
+  font-size: 0.875rem;
+}
+
+.banner code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--text-muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.col {
+  min-width: 0;
+}
+
+.colFull {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
