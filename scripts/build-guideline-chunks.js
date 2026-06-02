@@ -1,22 +1,14 @@
-// Node.js file system APIs.
 const fs = require('fs');
-// Node.js path utilities.
 const path = require('path');
-// PDF parser used to extract page text.
 const { PDFParse } = require('pdf-parse');
 
-// Resolve project root from scripts directory.
+
 const PROJECT_ROOT = path.resolve(__dirname, '..');
-// Folder containing guideline source/output files.
 const GUIDELINES_DIR = path.join(PROJECT_ROOT, 'data', 'guidelines');
-// Filtered metadata input (selected docs to chunk).
 const INDEX_INPUT_PATH = path.join(GUIDELINES_DIR, 'index.for-indexing.csv');
-// Final chunk output (JSON Lines).
 const OUTPUT_JSONL_PATH = path.join(GUIDELINES_DIR, 'chunks.jsonl');
 
-// Upper size bound for each chunk.
 const MAX_CHUNK_CHARS = 1200;
-// Lower preference threshold for chunk flushing.
 const MIN_CHUNK_CHARS = 300;
 
 // Parse one CSV line safely (supports quotes and escaped quotes).

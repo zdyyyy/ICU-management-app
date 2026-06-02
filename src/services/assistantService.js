@@ -15,6 +15,10 @@ function toByteSafe(str) {
 }
 
 async function askAssistant(question) {
+  if (!config.openaiApiKey) {
+    throw new Error('OPENAI_API_KEY is not set. Add it to .env and restart the server.');
+  }
+
   const availableBeds = bedService.getAvailableBeds();
   const waitlistData = waitlistService.getWaitlist(true);
   const rankedWaitlist = triageService.sortWaitlist(waitlistData);

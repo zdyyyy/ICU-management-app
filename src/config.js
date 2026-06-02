@@ -1,8 +1,12 @@
+require('dotenv').config();
+
+const openaiApiKey = process.env.OPENAI_API_KEY?.trim() || '';
+
 module.exports = {
   port: process.env.PORT || 3000,
   env: process.env.NODE_ENV || 'development',
-  
-  openaiApiKey: process.env.OPENAI_API_KEY || 'openai_api_key',
+
+  openaiApiKey,
 
   bedTypes: ['ICU', 'STEP_DOWN', 'GENERAL', 'EMERGENCY'],
 

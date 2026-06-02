@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
+    "client:install": "npm install --prefix client",
+    "client:dev": "npm run dev --prefix client",
+    "client:build": "npm run build --prefix client",
     "extract:guideline-metadata": "node scripts/extract-guideline-metadata.js",
     "promote:guideline-metadata": "node scripts/promote-guideline-metadata.js",
     "build:guideline-index-input": "node scripts/build-guideline-index-input.js",

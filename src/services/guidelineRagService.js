@@ -72,8 +72,6 @@ async function retrieveGuidelineEvidence(question, options = {}) {
   const minScore = options.minScore || 0.2;
 
   const chunks = readEmbeddedChunks();
-  console.log("chunks:")
-  console.log(chunks)
   if (!chunks.length) {
     return {
       context: '',
@@ -86,8 +84,6 @@ async function retrieveGuidelineEvidence(question, options = {}) {
     model: QUERY_EMBEDDING_MODEL,
     input: question,
   });
-  console.log("queryEmbedding:")
-  console.log(queryEmbedding)
   const vector = queryEmbedding.data[0].embedding;
   const ranked = chunks
     .map((chunk) => ({
