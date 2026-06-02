@@ -25,3 +25,6 @@ dist/
 build/
 client/dist/
 client/node_modules/
+
+# Local dev notes (not for the repo)
+TROUBLESHOOTING.md
