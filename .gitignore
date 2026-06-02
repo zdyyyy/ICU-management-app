@@ -23,3 +23,5 @@ Thumbs.db
 # Build / output (if you add any later)
 dist/
 build/
+client/dist/
+client/node_modules/

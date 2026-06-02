@@ -12,8 +12,11 @@ router.post('/ask', async (req, res) => {
   }
 
   try {
-    const answer = await assistantService.askAssistant(question);
-    res.json({ answer });
+    const result = await assistantService.askAssistant(question);
+    if (typeof result === 'string') {
+      return res.json({ answer: result, citations: [], rag: { reason: 'LEGACY_MODE' } });
+    }
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
